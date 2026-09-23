@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Add Student - Student Performance Analyzer</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="logo">Student Performance Analyzer</div>
+
+      <div class="nav-links">
+        <a href="/">Dashboard</a>
+
+        <a href="/add-student" class="active">Add Student</a>
+
+        <a href="/students">Students</a>
+
+        <a href="/analytics">Analytics</a>
+
+        <a href="/prediction">Prediction</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+      <div class="form-container">
+        <h1>Add New Student</h1>
+
+        <p class="form-description">
+          Enter the student's academic information below.
+        </p>
+
+        <form id="studentForm" action="/save-student" method="POST">
+          <!-- Student Name -->
+          <div class="form-group">
+            <label for="name"> Student Name </label>
+
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Enter student name"
+              required
+            />
+          </div>
+
+          <!-- Attendance -->
+          <div class="form-group">
+            <label for="attendance"> Attendance (%) </label>
+
+            <input
+              type="number"
+              id="attendance"
+              name="attendance"
+              placeholder="Example: 85"
+              min="0"
+              max="100"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <!-- Study Hours -->
+          <div class="form-group">
+            <label for="study_hours"> Study Hours per Day </label>
+
+            <input
+              type="number"
+              id="study_hours"
+              name="study_hours"
+              placeholder="Example: 3.5"
+              min="0"
+              max="24"
+              step="0.1"
+              required
+            />
+          </div>
+
+          <!-- Assignments Completed -->
+          <div class="form-group">
+            <label for="assignments_completed"> Assignments Completed </label>
+
+            <input
+              type="number"
+              id="assignments_completed"
+              name="assignments_completed"
+              placeholder="Example: 8"
+              min="0"
+              required
+            />
+          </div>
+
+          <!-- Total Assignments -->
+          <div class="form-group">
+            <label for="assignments_total"> Total Assignments </label>
+
+            <input
+              type="number"
+              id="assignments_total"
+              name="assignments_total"
+              placeholder="Example: 10"
+              min="1"
+              required
+            />
+          </div>
+
+          <!-- Internal Marks -->
+          <div class="form-group">
+            <label for="internal_marks"> Internal Marks </label>
+
+            <input
+              type="number"
+              id="internal_marks"
+              name="internal_marks"
+              placeholder="Example: 35"
+              min="0"
+              max="40"
+              step="0.01"
+              required
+            />
+
+            <small> Enter marks out of 40. </small>
+          </div>
+
+          <!-- Previous Percentage -->
+          <div class="form-group">
+            <label for="previous_percentage"> Previous Percentage </label>
+
+            <input
+              type="number"
+              id="previous_percentage"
+              name="previous_percentage"
+              placeholder="Example: 78"
+              min="0"
+              max="100"
+              step="0.01"
+              required
+            />
+          </div>
+
+          <!-- Buttons -->
+          <div class="form-buttons">
+            <a href="/" class="cancel-btn"> Cancel </a>
+
+            <button type="submit">Save Student</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

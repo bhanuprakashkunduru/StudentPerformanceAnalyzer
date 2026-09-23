@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Analytics - Student Performance Analyzer</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="logo">Student Performance Analyzer</div>
+
+      <div class="nav-links">
+        <a href="/">Dashboard</a>
+
+        <a href="/add-student">Add Student</a>
+
+        <a href="/students">Students</a>
+
+        <a href="/analytics" class="active">Analytics</a>
+
+        <a href="/prediction">Prediction</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+      <h1>Student Analytics</h1>
+
+      <p class="form-description">
+        Analyze student academic performance using different metrics.
+      </p>
+
+      <!-- =============================== -->
+      <!-- Prediction History -->
+      <!-- =============================== -->
+
+      <section class="chart-container">
+        <h2>Prediction History</h2>
+
+        {% if predictions %}
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Prediction</th>
+                <th>Risk Probability</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for prediction in predictions %}
+
+              <tr>
+                <td>{{ prediction[0] }}</td>
+
+                <td>{{ "%.2f"|format(prediction[1]) }}%</td>
+
+                <td>{{ prediction[2] }}</td>
+              </tr>
+
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        {% else %}
+
+        <p>No predictions have been recorded yet.</p>
+
+        {% endif %}
+      </section>
+      <!-- Risk Distribution -->
+      <section class="chart-container">
+        <h2>Risk Distribution</h2>
+
+        <canvas id="riskChart"></canvas>
+      </section>
+
+      <!-- =============================== -->
+      <!-- Attendance Chart -->
+      <!-- =============================== -->
+
+      <section class="chart-container">
+        <h2>Student Attendance</h2>
+
+        <canvas id="attendanceChart"></canvas>
+      </section>
+
+      <!-- =============================== -->
+      <!-- Internal Marks Chart -->
+      <!-- =============================== -->
+
+      <section class="chart-container">
+        <h2>Internal Marks</h2>
+
+        <canvas id="internalChart"></canvas>
+      </section>
+
+      <!-- =============================== -->
+      <!-- Study Hours Chart -->
+      <!-- =============================== -->
+
+      <section class="chart-container">
+        <h2>Study Hours per Day</h2>
+
+        <canvas id="studyHoursChart"></canvas>
+      </section>
+
+      <!-- =============================== -->
+      <!-- Assignment Completion Chart -->
+      <!-- =============================== -->
+
+      <section class="chart-container">
+        <h2>Assignment Completion</h2>
+
+        <canvas id="assignmentChart"></canvas>
+      </section>
+
+      <!-- =============================== -->
+      <!-- Previous Percentage Chart -->
+      <!-- =============================== -->
+
+      <section class="chart-container">
+        <h2>Previous Percentage</h2>
+
+        <canvas id="previousPercentageChart"></canvas>
+      </section>
+
+      <!-- =============================== -->
+      <!-- Attendance vs Internal Marks -->
+      <!-- =============================== -->
+
+      <section class="chart-container">
+        <h2>Attendance vs Internal Marks</h2>
+
+        <canvas id="comparisonChart"></canvas>
+      </section>
+    </main>
+
+    <!-- =============================== -->
+    <!-- JavaScript -->
+    <!-- =============================== -->
+
+    <script id="analyticsData" type="application/json">
+      {
+        "studentNames": {{ student_names | tojson }},
+        "attendanceValues": {{ attendance_values | tojson }},
+        "internalValues": {{ internal_values | tojson }},
+        "studyHoursValues": {{ study_hours_values | tojson }},
+        "assignmentCompletionValues": {{ assignment_completion_values | tojson }},
+        "previousPercentageValues": {{ previous_percentage_values | tojson }}
+      }
+    </script>
+
+    <script>
+
+            /*
+             * Get data from Flask
+             */
+
+            const analyticsData = JSON.parse(
+              document.getElementById("analyticsData").textContent
+            );
+
+            const studentNames = analyticsData.studentNames;
+            const attendanceValues = analyticsData.attendanceValues;
+            const internalValues = analyticsData.internalValues;
+            const studyHoursValues = analyticsData.studyHoursValues;
+            const assignmentCompletionValues =
+              analyticsData.assignmentCompletionValues;
+            const previousPercentageValues =
+              analyticsData.previousPercentageValues;
+
+
+            /*
+             * Debugging
+             */
+
+            console.log(
+              "Student Names:",
+              studentNames
+            );
+
+            console.log(
+              "Attendance:",
+              attendanceValues
+            );
+
+            console.log(
+              "Internal Marks:",
+              internalValues
+            );
+
+            console.log(
+              "Study Hours:",
+              studyHoursValues
+            );
+
+            console.log(
+              "Assignment Completion:",
+              assignmentCompletionValues
+            );
+
+            console.log(
+              "Previous Percentage:",
+              previousPercentageValues
+            );
+
+
+            /*
+             * 1. Attendance Chart
+             */
+
+            new Chart(
+              document.getElementById(
+                "attendanceChart"
+              ),
+              {
+                type: "bar",
+
+                data: {
+                  labels: studentNames,
+
+                  datasets: [
+                    {
+                      label: "Attendance (%)",
+
+                      data: attendanceValues
+                    }
+                  ]
+                },
+
+                options: {
+                  responsive: true,
+
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+
+                      max: 100,
+
+                      title: {
+                        display: true,
+
+                        text: "Attendance (%)"
+                      }
+                    }
+                  }
+                }
+              }
+            );
+
+
+            /*
+             * 2. Internal Marks Chart
+             */
+
+            new Chart(
+              document.getElementById(
+                "internalChart"
+              ),
+              {
+                type: "bar",
+
+                data: {
+                  labels: studentNames,
+
+                  datasets: [
+                    {
+                      label: "Internal Marks",
+
+                      data: internalValues
+                    }
+                  ]
+                },
+
+                options: {
+                  responsive: true,
+
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+
+                      max: 40,
+
+                      title: {
+                        display: true,
+
+                        text: "Marks"
+                      }
+                    }
+                  }
+                }
+              }
+            );
+
+
+            /*
+             * 3. Study Hours Chart
+             */
+
+            new Chart(
+              document.getElementById(
+                "studyHoursChart"
+              ),
+              {
+                type: "bar",
+
+                data: {
+                  labels: studentNames,
+
+                  datasets: [
+                    {
+                      label: "Study Hours per Day",
+
+                      data: studyHoursValues
+                    }
+                  ]
+                },
+
+                options: {
+                  responsive: true,
+
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+
+                      title: {
+                        display: true,
+
+                        text: "Hours"
+                      }
+                    }
+                  }
+                }
+              }
+            );
+
+
+            /*
+             * 4. Assignment Completion Chart
+             */
+
+            new Chart(
+              document.getElementById(
+                "assignmentChart"
+              ),
+              {
+                type: "bar",
+
+                data: {
+                  labels: studentNames,
+
+                  datasets: [
+                    {
+                      label: "Assignment Completion (%)",
+
+                      data:
+                        assignmentCompletionValues
+                    }
+                  ]
+                },
+
+                options: {
+                  responsive: true,
+
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+
+                      max: 100,
+
+                      title: {
+                        display: true,
+
+                        text: "Completion (%)"
+                      }
+                    }
+                  }
+                }
+              }
+            );
+
+
+            /*
+             * 5. Previous Percentage Chart
+             */
+
+            new Chart(
+              document.getElementById(
+                "previousPercentageChart"
+              ),
+              {
+                type: "bar",
+
+                data: {
+                  labels: studentNames,
+
+                  datasets: [
+                    {
+                      label: "Previous Percentage (%)",
+
+                      data:
+                        previousPercentageValues
+                    }
+                  ]
+                },
+
+                options: {
+                  responsive: true,
+
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+
+                      max: 100,
+
+                      title: {
+                        display: true,
+
+                        text: "Percentage (%)"
+                      }
+                    }
+                  }
+                }
+              }
+            );
+
+
+            /*
+             * 6. Attendance vs Internal Marks
+             */
+
+            new Chart(
+              document.getElementById(
+                "comparisonChart"
+              ),
+              {
+                type: "line",
+
+                data: {
+                  labels: studentNames,
+
+                  datasets: [
+
+                    {
+                      label: "Attendance (%)",
+
+                      data: attendanceValues,
+
+                      tension: 0.3
+                    },
+
+                    {
+                      label: "Internal Marks",
+
+                      data: internalValues,
+
+                      tension: 0.3
+                    }
+
+                  ]
+                },
+
+                options: {
+                  responsive: true,
+
+                  scales: {
+
+                    y: {
+                      beginAtZero: true,
+
+                      title: {
+                        display: true,
+
+                        text: "Value"
+                      }
+                    }
+
+                  }
+                }
+              }
+            );
+            const riskLabels =
+          {{ risk_labels | tojson }};
+
+      const riskValues =
+          {{ risk_values | tojson }};
+
+
+      new Chart(
+          document.getElementById("riskChart"),
+          {
+              type: "doughnut",
+
+              data: {
+                  labels: riskLabels,
+
+                  datasets: [
+                      {
+                          label: "Predictions",
+                          data: riskValues
+                      }
+                  ]
+              },
+
+              options: {
+                  responsive: true
+              }
+          }
+      );
+    </script>
+  </body>
+</html>

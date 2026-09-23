@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Data Analysis</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <div class="logo">Student Performance Analyzer</div>
+
+      <div class="nav-links">
+        <a href="/"> Dashboard </a>
+
+        <a href="/students"> Students </a>
+
+        <a href="/add-student"> Add Student </a>
+
+        <a href="/analytics"> Analytics </a>
+
+        <a href="/data-analysis" class="active"> Data Analysis </a>
+
+        <a href="#"> Prediction </a>
+      </div>
+    </nav>
+
+    <main class="container">
+      <div class="analytics-header">
+        <h1>Statistical Data Analysis</h1>
+
+        <p>
+          Statistical analysis of student academic data using Python and Pandas.
+        </p>
+      </div>
+
+      <!-- Statistics -->
+
+      <section class="stats">
+        <div class="stat-card">
+          <h3>Total Students</h3>
+
+          <p>{{ total_students }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>Average Attendance</h3>
+
+          <p>{{ "%.1f"|format(average_attendance) }}%</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>Average Internal</h3>
+
+          <p>{{ "%.1f"|format(average_internal) }}/40</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>Median Internal</h3>
+
+          <p>{{ "%.1f"|format(median_internal) }}/40</p>
+        </div>
+      </section>
+
+      <!-- More Statistics -->
+
+      <section class="performance-section">
+        <h2>Detailed Statistics</h2>
+
+        <div class="analysis-grid">
+          <div class="analysis-card">
+            <h3>Highest Internal Marks</h3>
+
+            <p>{{ highest_internal }}/40</p>
+          </div>
+
+          <div class="analysis-card">
+            <h3>Lowest Internal Marks</h3>
+
+            <p>{{ lowest_internal }}/40</p>
+          </div>
+
+          <div class="analysis-card">
+            <h3>Average Study Hours</h3>
+
+            <p>{{ "%.1f"|format(average_study_hours) }} hours/day</p>
+          </div>
+
+          <div class="analysis-card">
+            <h3>Previous Percentage</h3>
+
+            <p>{{ "%.1f"|format( average_previous_percentage ) }}%</p>
+          </div>
+        </div>
+      </section>
+      <section class="performance-section">
+        <h2>Relationship Analysis</h2>
+
+        <div class="analysis-grid">
+          <div class="analysis-card">
+            <h3>Attendance vs Internal Marks</h3>
+
+            <p>{{ "%.2f"|format(attendance_correlation) }}</p>
+
+            <small> Pearson correlation coefficient </small>
+          </div>
+
+          <div class="analysis-card">
+            <h3>Study Hours vs Internal Marks</h3>
+
+            <p>{{ "%.2f"|format(study_hours_correlation) }}</p>
+
+            <small> Pearson correlation coefficient </small>
+          </div>
+        </div>
+      </section>
+      <section class="performance-section">
+        <h2>Student Performance Categories</h2>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+
+                <th>Attendance</th>
+
+                <th>Study Hours</th>
+
+                <th>Assignments</th>
+
+                <th>Internal Marks</th>
+
+                <th>Performance</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for student in student_data %}
+
+              <tr>
+                <td>{{ student["name"] }}</td>
+
+                <td>{{ student["attendance"] }}%</td>
+
+                <td>{{ student["study_hours"] }}</td>
+
+                <td>
+                  {{ student["assignments_completed"] }}/{{
+                  student["assignments_total"] }}
+                </td>
+
+                <td>{{ student["internal_marks"] }}/40</td>
+
+                <td>{{ student["performance_category"] }}</td>
+              </tr>
+
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

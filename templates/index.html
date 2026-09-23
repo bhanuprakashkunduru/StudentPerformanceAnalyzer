@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Student Performance Analyzer</title>
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <div class="logo">Student Performance Analyzer</div>
+
+      <div class="nav-links">
+        <a href="/">Dashboard</a>
+
+        <a href="/add-student">Add Student</a>
+
+        <a href="/students">Students</a>
+
+        <a href="/analytics">Analytics</a>
+
+        <a href="/prediction">Prediction</a>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+      <!-- Welcome Section -->
+      <section class="welcome">
+        <div>
+          <h1>Student Performance Dashboard</h1>
+
+          <p>
+            Monitor student performance, analyze academic data and identify
+            students who may need support.
+          </p>
+        </div>
+
+        <button id="addStudentBtn">+ Add Student</button>
+      </section>
+
+      <!-- Statistics Cards -->
+      <section class="stats">
+        <div class="stat-card">
+          <h3>Total Students</h3>
+
+          <p id="totalStudents">{{ total_students }}</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>Average Internal Marks</h3>
+          <p id="averageInternalMarks">
+            {{ "%.1f"|format(average_internal_marks or 0) }}
+          </p>
+        </div>
+
+        <div class="stat-card">
+          <h3>Average Attendance</h3>
+
+          <p id="averageAttendance">{{ "%.1f"|format(average_attendance) }}%</p>
+        </div>
+
+        <div class="stat-card">
+          <h3>Students At Risk</h3>
+          <p id="studentsAtRisk">{{ students_at_risk }}</p>
+        </div>
+      </section>
+
+      <!-- Recent Students -->
+      <section class="chart-container">
+        <h2>Recent Students</h2>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Attendance</th>
+                <th>Internal Marks</th>
+                <th>Previous Percentage</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for student in recent_students %}
+
+              <tr>
+                <td>{{ student[0] }}</td>
+
+                <td>{{ student[1] }}%</td>
+
+                <td>{{ student[2] }}</td>
+
+                <td>{{ student[3] }}%</td>
+              </tr>
+
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Performance Section -->
+      <section class="performance-section">
+        <div class="section-header">
+          <h2>Student Performance</h2>
+
+          <button id="viewStudentsBtn">View Students</button>
+        </div>
+
+        <div class="empty-state">
+          <h3>No Student Data Yet</h3>
+
+          <p>Add students to start analyzing their performance.</p>
+
+          <button id="startAddingBtn">Add Your First Student</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>
